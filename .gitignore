@@ -1,6 +1,9 @@
-# DS_Store
+node_modules/
+dist/
+.venv/
+.audio-cache/
+__pycache__/
+.pytest_cache/
+*.pyc
 .DS_Store
-
-# .vscode
-.vscode
-
+*.tsbuildinfo

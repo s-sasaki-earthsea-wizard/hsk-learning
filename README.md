@@ -52,6 +52,12 @@ make run
 
 `http://127.0.0.1:5001` を開く。初回の音声生成にはインターネット接続が必要で、生成後の同じ音声は `.audio-cache/` から再利用される。
 
+## GitHub Pagesへ公開
+
+このリポジトリはViteでビルドした `dist/` をGitHub Pagesへデプロイする。GitHubのリポジトリ設定で Settings → Pages → Build and deployment → Source を `GitHub Actions` にしてから、`main` へpushする。Actionsでは `GITHUB_PAGES=true` を使い、公開URLに合わせて `/hsk-learning/` 配下のアセットを参照する。
+
+GitHub Pagesは静的ホスティングのため、FlaskのgTTS APIは動かない。発音ボタンはブラウザの音声合成へフォールバックする。gTTS音声まで公開する場合は別途サーバーやFunctionsへ配置する。
+
 ## テスト
 
 ```bash

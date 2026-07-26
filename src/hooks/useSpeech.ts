@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export function useSpeech() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,10 +14,46 @@ export function useSpeech() {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
     }
+    if (utteranceRef.current && 'speechSynthesis' in window) {
+      utteranceRef.current.onend = null;
+      utteranceRef.current.onerror = null;
+      window.speechSynthesis.cancel();
+      utteranceRef.current = null;
+    }
     setActiveId(null);
   }, []);
 
   useEffect(() => stop, [stop]);
+
+  const speakWithBrowser = useCallback((text: string, slow: boolean) => {
+    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+      return false;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
+    utterance.rate = slow ? 0.7 : 0.95;
+    const chineseVoice = window.speechSynthesis
+      .getVoices()
+      .find((voice) => voice.lang.toLowerCase().startsWith('zh'));
+    if (chineseVoice) {
+      utterance.voice = chineseVoice;
+    }
+
+    utterance.onend = () => {
+      utteranceRef.current = null;
+      setActiveId(null);
+    };
+    utterance.onerror = () => {
+      utteranceRef.current = null;
+      setActiveId(null);
+      setError('ブラウザの音声合成で再生できなかったよ。');
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    return true;
+  }, []);
 
   const speak = useCallback(
     async (id: string, text: string, slow = false) => {
@@ -48,6 +85,9 @@ export function useSpeech() {
         );
         await audio.play();
       } catch (speechError) {
+        if (speakWithBrowser(text, slow)) {
+          return;
+        }
         stop();
         setError(
           speechError instanceof Error
@@ -56,7 +96,7 @@ export function useSpeech() {
         );
       }
     },
-    [stop],
+    [speakWithBrowser, stop],
   );
 
   return { speak, stop, activeId, error, clearError: () => setError(null) };

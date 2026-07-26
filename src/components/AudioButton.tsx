@@ -22,7 +22,7 @@ export function AudioButton({
       type="button"
       className={`audio-button${compact ? ' audio-button--compact' : ''}${isActive ? ' is-active' : ''}`}
       onClick={() => onSpeak(itemId, text)}
-      aria-label="gTTSで中国語の発音を再生"
+      aria-label="中国語の発音を再生"
       title="発音を聞く"
     >
       <VolumeIcon />

@@ -25,19 +25,22 @@ function getChoiceKey(item: HskItem, direction: QuizDirection): string {
 function buildChoices(
   item: HskItem,
   direction: QuizDirection,
-  itemPool: readonly HskItem[],
-  fullPool: readonly HskItem[],
+  categoryPool: readonly HskItem[],
   random: RandomSource,
 ): HskItem[] {
   const correctKey = getChoiceKey(item, direction);
-  const candidates = [...itemPool, ...fullPool].filter(
-    (candidate, index, combined) =>
+  const candidates = categoryPool.filter(
+    (candidate, index, pool) =>
       candidate.id !== item.id &&
       getChoiceKey(candidate, direction) !== correctKey &&
-      combined.findIndex(
+      pool.findIndex(
         (entry) => getChoiceKey(entry, direction) === getChoiceKey(candidate, direction),
       ) === index,
   );
+
+  if (candidates.length < 4) {
+    throw new Error(`Category "${item.category}" needs at least five distinct choices.`);
+  }
 
   return shuffle([item, ...shuffle(candidates, random).slice(0, 4)], random);
 }
@@ -96,7 +99,7 @@ export function createQuizSession(
     return {
       item,
       direction,
-      choices: buildChoices(item, direction, sameCategory, items, random),
+      choices: buildChoices(item, direction, sameCategory, random),
     };
   });
 }

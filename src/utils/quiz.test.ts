@@ -88,6 +88,18 @@ describe('createQuizSession', () => {
     });
   });
 
+  it('keeps every answer choice in the same category as its question', () => {
+    [HSK1_ITEMS, HSK2_ITEMS, HSK3_ITEMS].forEach((items, levelIndex) => {
+      const questions = createQuizSession(items, 'all', 20, seededRandom(2026 + levelIndex));
+
+      questions.forEach((question) => {
+        expect(new Set(question.choices.map((choice) => choice.category))).toEqual(
+          new Set([question.item.category]),
+        );
+      });
+    });
+  });
+
   it('creates unambiguous choices from the cumulative HSK 3 pool', () => {
     const questions = createQuizSession(HSK3_ITEMS, 'vocabulary', 100, seededRandom(314));
 

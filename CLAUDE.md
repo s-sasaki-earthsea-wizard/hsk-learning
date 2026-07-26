@@ -1,8 +1,26 @@
-# Project Name
+# Hanzi Step
 
 ## プロジェクト概要
 
-プロジェクトの概要を記載します。
+日本語話者向けのHSK中国語学習Webアプリ。HSK 1〜3を実装済み。
+
+## 実装状況
+
+- HSK 2.0の公式語彙：HSK 1は150語、HSK 2は累計300語、HSK 3は累計600語
+- 定型表現：HSK 1・2は各18件、HSK 3は20件。ミニ会話は各級10件
+- レベル切替と級別の学習履歴
+- 日中・中日の混合5択クイズ
+- 簡体字、繁体字、拼音の併記
+- Flask + gTTSの音声APIとMP3キャッシュ
+- React 18 + TypeScript + ViteのレスポンシブUI
+- Vitestとpytestによる問題生成・APIテスト
+
+## 技術仕様
+
+- Frontend: React 18, TypeScript, Vite
+- Backend: Python 3, Flask, gTTS
+- Local storage key: `hanzi-step:stats`（旧HSK 1キーから自動移行）
+- Audio cache: `.audio-cache/`
 
 ## 言語設定
 

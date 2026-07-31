@@ -2,7 +2,7 @@
 
 ## プロジェクト概要
 
-日本語話者向けのHSK中国語学習Webアプリ。HSK 1〜3を実装済み。
+日本語話者向けの中国語学習Webアプリ。HSK 1〜3と、HSK学習を補完するVRChat中国語会話モードを実装済み。
 
 ## 実装状況
 
@@ -11,6 +11,8 @@
 - レベル切替と級別の学習履歴
 - 日中・中日の混合5択クイズ
 - 簡体字、繁体字、拼音の併記
+- YOUR PATHから開くHSK非連動のVRChat中国語会話モード
+- VRChat向けのフランクな26フレーズ、距離感表示、3つの場面別会話例
 - Flask + gTTSの音声APIとMP3キャッシュ
 - React 18 + TypeScript + ViteのレスポンシブUI
 - Vitestとpytestによる問題生成・APIテスト
@@ -20,6 +22,7 @@
 - Frontend: React 18, TypeScript, Vite
 - Backend: Python 3, Flask, gTTS
 - Local storage key: `hanzi-step:stats`（旧HSK 1キーから自動移行）
+- VRChat mode URL: `#/vrchat`（学習履歴はHSKモードと分離）
 - Audio cache: `.audio-cache/`
 
 ## 言語設定

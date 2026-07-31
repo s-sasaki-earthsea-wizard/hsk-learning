@@ -6,18 +6,48 @@ export type CategoryFilter = LearningCategory | 'all';
 
 export type QuizDirection = 'ja-to-zh' | 'zh-to-ja';
 
-export type Screen = 'home' | 'quiz' | 'result';
+export type Screen = 'home' | 'quiz' | 'result' | 'vrchat';
 
-export interface HskItem {
-  id: string;
-  level?: HskLevel;
-  category: LearningCategory;
+export interface ChineseText {
   simplified: string;
   traditional: string;
   pinyin: string;
   japanese: string;
-  note?: string;
   audioText?: string;
+}
+
+export interface HskItem extends ChineseText {
+  id: string;
+  level?: HskLevel;
+  category: LearningCategory;
+  note?: string;
+}
+
+export type VrchatPhraseCategory =
+  | 'starter'
+  | 'reaction'
+  | 'help'
+  | 'vrchat'
+  | 'slang';
+
+export type PhraseTone = 'safe' | 'casual' | 'strong';
+
+export interface VrchatPhrase extends ChineseText {
+  id: string;
+  category: VrchatPhraseCategory;
+  tone: PhraseTone;
+  nuance: string;
+}
+
+export interface VrchatDialogueLine extends ChineseText {
+  speaker: 'you' | 'partner';
+}
+
+export interface VrchatDialogue {
+  id: string;
+  title: string;
+  situation: string;
+  lines: VrchatDialogueLine[];
 }
 
 export interface QuizQuestion {

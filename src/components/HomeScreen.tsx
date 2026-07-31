@@ -17,9 +17,16 @@ interface HomeScreenProps {
   stats: StudyStats;
   onLevelChange: (level: HskLevel) => void;
   onStart: (category: CategoryFilter, questionCount: number) => void;
+  onOpenVrchat: () => void;
 }
 
-export function HomeScreen({ level, stats, onLevelChange, onStart }: HomeScreenProps) {
+export function HomeScreen({
+  level,
+  stats,
+  onLevelChange,
+  onStart,
+  onOpenVrchat,
+}: HomeScreenProps) {
   const [category, setCategory] = useState<CategoryFilter>('all');
   const [questionCount, setQuestionCount] = useState(10);
   const { speak, activeId, error, clearError } = useSpeech();
@@ -61,6 +68,19 @@ export function HomeScreen({ level, stats, onLevelChange, onStart }: HomeScreenP
               </button>
             );
           })}
+          <div className="path-divider"><span>COMMUNITY MODE</span></div>
+          <button
+            type="button"
+            className="level-card vrchat-path-card"
+            onClick={onOpenVrchat}
+          >
+            <span className="level-number level-number--vrchat">ALT</span>
+            <span className="level-card-copy">
+              <strong>VRChat 会話</strong>
+              <small>日常表現・スラング</small>
+            </span>
+            <span className="vrchat-path-icon"><ChatIcon /></span>
+          </button>
           <div className="rail-progress">
             <div className="progress-ring" style={{ '--progress': `${progress * 3.6}deg` } as React.CSSProperties}>
               <span>{progress}%</span>

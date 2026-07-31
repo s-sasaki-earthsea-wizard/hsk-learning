@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppHeader } from './components/AppHeader';
 import { HomeScreen } from './components/HomeScreen';
 import { QuizScreen } from './components/QuizScreen';
 import { ResultScreen } from './components/ResultScreen';
+import { VrchatModeScreen } from './components/VrchatModeScreen';
 import { HSK_CATALOG } from './data/catalog';
 import type {
   AnswerRecord,
@@ -54,7 +55,9 @@ function loadStats(): StudyStatsByLevel {
 }
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<Screen>(() =>
+    window.location.hash === '#/vrchat' ? 'vrchat' : 'home',
+  );
   const [selectedLevel, setSelectedLevel] = useState<HskLevel>(1);
   const [statsByLevel, setStatsByLevel] = useState<StudyStatsByLevel>(loadStats);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -68,6 +71,26 @@ function App() {
     category: 'all',
     count: 10,
   });
+
+  useEffect(() => {
+    const syncScreenWithUrl = () => {
+      setScreen(window.location.hash === '#/vrchat' ? 'vrchat' : 'home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.addEventListener('popstate', syncScreenWithUrl);
+    window.addEventListener('hashchange', syncScreenWithUrl);
+    return () => {
+      window.removeEventListener('popstate', syncScreenWithUrl);
+      window.removeEventListener('hashchange', syncScreenWithUrl);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.title = screen === 'vrchat'
+      ? 'Hanzi Step | VRChat 中国語会話'
+      : `Hanzi Step | HSK ${selectedLevel}`;
+  }, [screen, selectedLevel]);
 
   const startSession = (level: HskLevel, category: CategoryFilter, count: number) => {
     setSelectedLevel(level);
@@ -97,7 +120,16 @@ function App() {
   };
 
   const goHome = () => {
+    if (window.location.hash === '#/vrchat') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
     setScreen('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openVrchatMode = () => {
+    window.history.pushState(null, '', '#/vrchat');
+    setScreen('vrchat');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -110,6 +142,7 @@ function App() {
           stats={statsByLevel[selectedLevel]}
           onLevelChange={setSelectedLevel}
           onStart={(category, count) => startSession(selectedLevel, category, count)}
+          onOpenVrchat={openVrchatMode}
         />
       )}
       {screen === 'quiz' && questions.length > 0 && (
@@ -122,10 +155,19 @@ function App() {
           onHome={goHome}
         />
       )}
+      {screen === 'vrchat' && <VrchatModeScreen />}
       <footer className="app-footer">
         <span>HANZI STEP</span>
-        <p>簡体字 · 繁体字 · 拼音をひとつずつ。</p>
-        <small>HSK {selectedLevel} · Japanese learner edition</small>
+        <p>
+          {screen === 'vrchat'
+            ? '教科書の外で、会話を続ける中国語。'
+            : '簡体字 · 繁体字 · 拼音をひとつずつ。'}
+        </p>
+        <small>
+          {screen === 'vrchat'
+            ? 'VRChat · Casual Chinese edition'
+            : `HSK ${selectedLevel} · Japanese learner edition`}
+        </small>
       </footer>
     </div>
   );

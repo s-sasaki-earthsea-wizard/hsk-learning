@@ -8,6 +8,8 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ screen, level, onHome }: AppHeaderProps) {
+  const isVrchatMode = screen === 'vrchat';
+
   return (
     <header className="app-header">
       <button type="button" className="brand" onClick={onHome} aria-label="ホームへ戻る">
@@ -24,7 +26,14 @@ export function AppHeader({ screen, level, onHome }: AppHeaderProps) {
             <span>ホーム</span>
           </button>
         )}
-        <span className="level-pill">HSK {level}</span>
+        <span className={`level-pill${isVrchatMode ? ' level-pill--vrchat' : ''}`}>
+          {isVrchatMode ? (
+            <>
+              <span className="mode-label-desktop">VRCHAT · SOCIAL</span>
+              <span className="mode-label-mobile">VRCHAT</span>
+            </>
+          ) : `HSK ${level}`}
+        </span>
       </div>
     </header>
   );

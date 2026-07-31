@@ -1,7 +1,7 @@
-import type { HskItem } from '../types';
+import type { ChineseText } from '../types';
 
 interface ChineseDisplayProps {
-  item: HskItem;
+  item: ChineseText;
   size?: 'large' | 'medium' | 'small';
   showLabels?: boolean;
 }
